@@ -5,7 +5,7 @@ LiveTex is a VS Code and Cursor extension that allows you to preview the live ch
 If a TeX distribution is installed, LiveTex builds with `latexmk`, and if not, it downloads the self-contained
 [Tectonic](https://tectonic-typesetting.github.io) engine.
 
-Just to be clear, this project is a personal utility made using Claude, as I found no local TeX software that would fit my needs and integrate with the IDE well. The software is provided as is with no warrancy of any kind.
+> Just to be clear, this project is a **personal utility made using Claude**, as I found no local TeX software that would fit my needs and integrate with the IDE well. The software is provided as is with no warrancy of any kind.
 
 [Features](#features) · [Installation](#installation) · [Getting started](#getting-started) · [Sync with Overleaf](#sync-with-overleaf) · [Development](#development)
 
@@ -22,7 +22,11 @@ Just to be clear, this project is a personal utility made using Claude, as I fou
 - **Multi-file projects** - when you edit a chapter, LiveTex finds and compiles the main document automatically, or you can point to it with a `% !TEX root = main.tex` comment. A `% !TEX program = xelatex` comment picks the engine for a document, and a `latexmkrc` file in the project folder is used, as on Overleaf.
 - **PDF output** - saving writes `<root>.pdf` next to the root file, and the **PDF** button exports a copy anywhere.
 
+
+
 ## Installation
+
+
 
 ### Prerequisites
 
@@ -32,6 +36,8 @@ Just to be clear, this project is a personal utility made using Claude, as I fou
 
 > [!NOTE]
 > LiveTex is not yet published on the VS Code Marketplace or Open VSX. For now, install it from a `.vsix` file.
+
+
 
 ### From a release
 
@@ -56,6 +62,8 @@ npm run package
 code --install-extension livetex-0.4.0.vsix
 ```
 
+
+
 ## Getting started
 
 1. Open a `.tex` file and click the preview icon in the editor title bar, press `Ctrl+K V`, or run **LiveTex: Open Live Preview**.
@@ -76,6 +84,8 @@ These take priority over the `livetex.latexmkArgs` setting.
 > [!IMPORTANT]
 > A `latexmkrc` can run arbitrary code, so LiveTex only uses it in [trusted workspaces](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust).
 
+
+
 ## Sync with Overleaf
 
 Syncing uses Overleaf's official [Git integration](https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/git), which needs an Overleaf plan that includes it (personal or institutional). Overleaf Server Pro 4.0+ with Git enabled works too.
@@ -84,8 +94,8 @@ Syncing uses Overleaf's official [Git integration](https://docs.overleaf.com/int
 
 1. On Overleaf, create a Git token: **Account Settings -> Git Integration**.
 2. Run one of these commands:
-   - **LiveTex: Clone Overleaf Project…** to start from an Overleaf project in a new folder.
-   - **LiveTex: Link Folder to Overleaf Project…** to connect an existing local folder (also available in the Explorer's right-click menu).
+  - **LiveTex: Clone Overleaf Project…** to start from an Overleaf project in a new folder.
+  - **LiveTex: Link Folder to Overleaf Project…** to connect an existing local folder (also available in the Explorer's right-click menu).
 3. Paste the project URL from the browser (or its Git URL or ID), then the token.
 
 The token is stored in VS Code's secret storage. Linking first shows exactly which files will be uploaded and asks for confirmation. 
@@ -104,56 +114,63 @@ Files that are **not** uploaded include: build output (`.aux`, `.log`, `.synctex
 
 ![LiveTex commands in the Command Palette](docs/screenshots/commands.png)
 
-| Command | Default key |
-|---|---|
-| LiveTex: Open Live Preview | `Ctrl+K V` |
-| LiveTex: Compile Now | `Ctrl+Alt+Enter` |
-| LiveTex: Export PDF… | — |
-| LiveTex: Show Cursor Position in PDF | — |
-| LiveTex: Use This File as Root Document | — |
-| LiveTex: Download Tectonic Engine | — |
-| LiveTex: Show Compiler Output | — |
-| LiveTex: Sync with Overleaf | click the Overleaf status bar item |
-| LiveTex: Link Folder to Overleaf Project… / Clone Overleaf Project… | — |
-| LiveTex: Abort Overleaf Merge (Keep Local Version) | — |
-| LiveTex: Open Project on Overleaf | — |
-| LiveTex: Set Overleaf Git Token… / Forget Overleaf Git Tokens | — |
+
+| Command                                                             | Default key                        |
+| ------------------------------------------------------------------- | ---------------------------------- |
+| LiveTex: Open Live Preview                                          | `Ctrl+K V`                         |
+| LiveTex: Compile Now                                                | `Ctrl+Alt+Enter`                   |
+| LiveTex: Export PDF…                                                | —                                  |
+| LiveTex: Show Cursor Position in PDF                                | —                                  |
+| LiveTex: Use This File as Root Document                             | —                                  |
+| LiveTex: Download Tectonic Engine                                   | —                                  |
+| LiveTex: Show Compiler Output                                       | —                                  |
+| LiveTex: Sync with Overleaf                                         | click the Overleaf status bar item |
+| LiveTex: Link Folder to Overleaf Project… / Clone Overleaf Project… | —                                  |
+| LiveTex: Abort Overleaf Merge (Keep Local Version)                  | —                                  |
+| LiveTex: Open Project on Overleaf                                   | —                                  |
+| LiveTex: Set Overleaf Git Token… / Forget Overleaf Git Tokens       | —                                  |
+
 
 In the preview, `Ctrl +` / `Ctrl -` / `Ctrl 0` or Ctrl+wheel zoom, and clicking the zoom label returns to fit-width.
 
 ## Settings
 
-<details>
-<summary>All <code>livetex.*</code> settings</summary>
+All `livetex.*` settings
 
-| Setting | Default | Description |
-|---|---|---|
-| `livetex.engine` | `auto` | `auto` (installed TeX if found, else Tectonic) · `tectonic` · `latexmk` |
-| `livetex.texBinPath` | `""` | `bin` directory of your TeX distribution, if not auto-detected |
-| `livetex.tectonicPath` | `""` | Use a specific tectonic binary |
-| `livetex.compileOn` | `change` | `change` (live) · `save` · `manual` |
-| `livetex.debounceMs` | `250` | Idle time before a live rebuild |
-| `livetex.fastPreview` | `true` | Single pass reusing `.aux`/`.bbl` while typing |
-| `livetex.previewImageOptimization` | `true` | Flattened copies of large transparent PNGs for preview builds |
-| `livetex.continueOnErrors` | `true` | Still produce a PDF when TeX reports errors |
-| `livetex.pdfOnSave` | `true` | Write `<root>.pdf` next to the root on save |
-| `livetex.syncOnCursorMove` | `true` | Highlight the cursor's position in the PDF |
-| `livetex.shellEscape` | `false` | Enable `\write18` (minted etc.). Only for trusted documents |
-| `livetex.rootFile` | `""` | Force a root document (workspace-relative) |
-| `livetex.invertPdfInDarkTheme` | `false` | Dark-mode friendly page colours |
-| `livetex.latexmkArgs` | `-pdf -synctex=1 …` | Default args for latexmk. A project latexmkrc and `% !TEX program` take precedence |
-| `livetex.overleaf.autoPull` | `true` | Download Overleaf changes on window focus (fast-forward only, never uploads) |
-| `livetex.overleaf.pushOnSave` | `false` | Full Overleaf sync 15 s after the last save |
 
-</details>
+| Setting                            | Default             | Description                                                                        |
+| ---------------------------------- | ------------------- | ---------------------------------------------------------------------------------- |
+| `livetex.engine`                   | `auto`              | `auto` (installed TeX if found, else Tectonic) · `tectonic` · `latexmk`            |
+| `livetex.texBinPath`               | `""`                | `bin` directory of your TeX distribution, if not auto-detected                     |
+| `livetex.tectonicPath`             | `""`                | Use a specific tectonic binary                                                     |
+| `livetex.compileOn`                | `change`            | `change` (live) · `save` · `manual`                                                |
+| `livetex.debounceMs`               | `250`               | Idle time before a live rebuild                                                    |
+| `livetex.fastPreview`              | `true`              | Single pass reusing `.aux`/`.bbl` while typing                                     |
+| `livetex.previewImageOptimization` | `true`              | Flattened copies of large transparent PNGs for preview builds                      |
+| `livetex.continueOnErrors`         | `true`              | Still produce a PDF when TeX reports errors                                        |
+| `livetex.pdfOnSave`                | `true`              | Write `<root>.pdf` next to the root on save                                        |
+| `livetex.syncOnCursorMove`         | `true`              | Highlight the cursor's position in the PDF                                         |
+| `livetex.shellEscape`              | `false`             | Enable `\write18` (minted etc.). Only for trusted documents                        |
+| `livetex.rootFile`                 | `""`                | Force a root document (workspace-relative)                                         |
+| `livetex.invertPdfInDarkTheme`     | `false`             | Dark-mode friendly page colours                                                    |
+| `livetex.latexmkArgs`              | `-pdf -synctex=1 …` | Default args for latexmk. A project latexmkrc and `% !TEX program` take precedence |
+| `livetex.overleaf.autoPull`        | `true`              | Download Overleaf changes on window focus (fast-forward only, never uploads)       |
+| `livetex.overleaf.pushOnSave`      | `false`             | Full Overleaf sync 15 s after the last save                                        |
+
+
+
 
 ## Development
+
+
 
 ### Prerequisites
 
 - Node.js 22 or newer with npm
 - VS Code or Cursor
 - Git (the Overleaf sync tests run against a local git server)
+
+
 
 ### Setup
 
@@ -168,13 +185,15 @@ npm run build
 
 ### Running the extension
 
-Open the repository in VS Code or Cursor and press **F5**. This builds the extension and starts an Extension Development Host with the bundled demo document in [`examples/demo`](examples/demo) open.
+Open the repository in VS Code or Cursor and press **F5**. This builds the extension and starts an Extension Development Host with the bundled demo document in `[examples/demo](examples/demo)` open.
 
 For a faster loop, keep a watcher running and reload the development host window (**Developer: Reload Window**) after each change:
 
 ```bash
 npm run watch
 ```
+
+
 
 ### Tests and static checks
 
@@ -183,28 +202,33 @@ npm run typecheck   # extension and webview
 npm test            # SyncTeX, log parser, project options, PNG flattening, Overleaf sync
 ```
 
+
+
 ### Packaging
 
 ```bash
 npm run package
 ```
 
-This produces a minified `livetex-<version>.vsix`. The Marketplace page is generated from [`MARKETPLACE.md`](MARKETPLACE.md), not from this README.
+This produces a minified `livetex-<version>.vsix`. The Marketplace page is generated from `[MARKETPLACE.md](MARKETPLACE.md)`, not from this README.
 
 ### End-to-end testing with agents
 
-For agent-driven testing in Cursor (screenshots, clicking through the preview webview), see the Claude Code skill in [`.claude/skills/cursor-extension-playground`](.claude/skills/cursor-extension-playground/SKILL.md).
-
+For agent-driven testing in Cursor (screenshots, clicking through the preview webview), see the Claude Code skill in `[.claude/skills/cursor-extension-playground](.claude/skills/cursor-extension-playground/SKILL.md)`.
 
 ## Limitations
 
 - Tectonic is XeTeX-based and bundles a 2022 TeX Live snapshot. Documents written for pdfLaTeX (`fontenc`/`inputenc` with Type 1 fonts) lose non-ASCII characters, and `biblatex` needs `biber`, which Tectonic can't pair with. Use a TeX distribution for those; LiveTex then picks latexmk automatically.
 - Preview builds show transparent PNGs flattened onto white. This is only visible where such an image sits on a coloured background, and never in saved or exported PDFs.
 
+
+
 ## Acknowledgements
 
 - [pdf.js](https://github.com/mozilla/pdf.js) (Apache-2.0) renders the preview and is bundled in `media/`.
 - [Tectonic](https://tectonic-typesetting.github.io) (MIT) is downloaded at runtime and not bundled.
+
+
 
 ## License
 
