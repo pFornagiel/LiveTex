@@ -282,7 +282,7 @@
     "watch": "node esbuild.mjs --watch",
     "typecheck": "tsc --noEmit -p . && tsc --noEmit -p webview",
     "test": "esbuild test/*.test.ts --bundle --platform=node --format=cjs --outdir=dist/test --log-level=warning && node --test dist/test/",
-    "package": "node esbuild.mjs --production && vsce package --no-dependencies"
+    "package": "node esbuild.mjs --production && vsce package --no-dependencies --readme-path MARKETPLACE.md"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",
