@@ -13,14 +13,14 @@ If a TeX distribution is installed, LiveTex builds with `latexmk`, and if not, i
 
 ## Features
 
-- **Live preview while typing** - unsaved buffers are compiled from a shadow copy, so your files on disk are never touched. This includes unsaved edits in other files of a multi-file project, such as chapters pulled in with `\input`.
-- **SyncTeX support** - double-click (or Ctrl/Cmd-click) in the PDF to jump to the source; moving the cursor highlights the matching spot in the PDF.
-- **Overleaf-compatible builds** - TeX Live, TinyTeX, MacTeX and MiKTeX are detected even when they are not on the editor's `PATH`, and documents are built with `latexmk` (pdfLaTeX, biber or BibTeX).
-- **Overleaf sync** - link a local folder or clone an Overleaf project, then sync from the status bar. Conflicts open in the editor's merge tools.
-- **Automatic setup** - without a TeX distribution, LiveTex offers to download Tectonic, a single binary that fetches the LaTeX packages a document needs on first use.
-- **Errors output** - TeX errors and warnings land in the Problems panel on the right file and line, and the PDF still renders despite errors.
-- **Multi-file projects** - when you edit a chapter, LiveTex finds and compiles the main document automatically, or you can point to it with a `% !TEX root = main.tex` comment. A `% !TEX program = xelatex` comment picks the engine for a document, and a `latexmkrc` file in the project folder is used, as on Overleaf.
+- **Live preview** - changes rendered and synchronised as you type in another tab.
+- **SyncTeX support** - double-click (or Ctrl/Cmd-click) in the PDF to jump to the source, moving the cursor also highlights the matching spot in the PDF.
+- **Overleaf-compatible builds** - TeX Live, TinyTeX, MacTeX and MiKTeX are detected automatically, documents are built with `latexmk` (pdfLaTeX, biber or BibTeX).
+- **Overleaf sync** - link a local folder or clone an Overleaf project in order to sync local changes.
+- **Automatic setup** - If a TeX distribution is installed, LiveTex builds with `latexmk`, and if not, it downloads the self-contained [Tectonic](https://tectonic-typesetting.github.io) engine.
+- **Multi-file projects** - when you edit a chapter, LiveTex finds and compiles the main document automatically or you can point to it with a `% !TEX root = main.tex` comment. A `% !TEX program = xelatex` comment picks the engine for a document, and a `latexmkrc` file in the project folder is used, as on Overleaf.
 - **PDF output** - saving writes `<root>.pdf` next to the root file, and the **PDF** button exports a copy anywhere.
+- **Errors output** - TeX errors and warnings land in the Problems panel on the right file and line, and the PDF still renders despite errors.
 
 
 
