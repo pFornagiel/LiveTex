@@ -1,0 +1,91 @@
+name: Release VSIX
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish-release:
+        description: Create a GitHub release (tag v<version>) with the .vsix attached
+        type: boolean
+        default: true
+      prerelease:
+        description: Mark the GitHub release as a pre-release
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Read version
+        id: meta
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "vsix=livetex-$version.vsix" >> "$GITHUB_OUTPUT"
+
+      - name: Fail if the release already exists
+        if: inputs.publish-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ steps.meta.outputs.version }}" > /dev/null 2>&1; then
+            echo "::error::Release v${{ steps.meta.outputs.version }} already exists. Bump the version in package.json."
+            exit 1
+          fi
+
+      - name: Package
+        run: npm run package
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.vsix }}
+          path: ${{ steps.meta.outputs.vsix }}
+          if-no-files-found: error
+
+      - name: Extract release notes from CHANGELOG.md
+        if: inputs.publish-release
+        run: |
+          awk -v v="${{ steps.meta.outputs.version }}" '
+            /^## / { if (found) exit; if ($2 == v) { found = 1; next } }
+            found
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "Release ${{ steps.meta.outputs.version }}" > release-notes.md
+          fi
+          cat release-notes.md
+
+      - name: Create GitHub release
+        if: inputs.publish-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.meta.outputs.version }}" \
+            "${{ steps.meta.outputs.vsix }}" \
+            --target "$GITHUB_SHA" \
+            --title "LiveTex ${{ steps.meta.outputs.version }}" \
+            --notes-file release-notes.md \
+            ${{ inputs.prerelease && '--prerelease' || '' }}
