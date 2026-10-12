@@ -1,0 +1,9 @@
+**
+!dist/extension.js
+!dist/flattenWorker.js
+!media/**
+!package.json
+!README.md
+!LICENSE
+!CHANGELOG.md
+media/*.map

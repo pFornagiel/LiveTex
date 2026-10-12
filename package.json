@@ -1,0 +1,295 @@
+{
+  "name": "livetex",
+  "displayName": "LiveTex",
+  "description": "Overleaf-style live LaTeX preview inside VS Code / Cursor: compiles as you type with Tectonic, renders the PDF next to your editor, SyncTeX in both directions, one-click PDF export, and two-way sync with Overleaf projects over Git.",
+  "version": "0.4.0",
+  "publisher": "local",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pFornagiel/livetex.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pFornagiel/livetex/issues"
+  },
+  "homepage": "https://github.com/pFornagiel/livetex#readme",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "latex",
+    "tex",
+    "pdf",
+    "preview",
+    "tectonic",
+    "overleaf",
+    "synctex",
+    "git"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:latex",
+    "onLanguage:tex",
+    "onWebviewPanel:livetex.preview"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "livetex.openPreview",
+        "title": "Open Live Preview",
+        "category": "LiveTex",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "livetex.compile",
+        "title": "Compile Now",
+        "category": "LiveTex",
+        "icon": "$(play)"
+      },
+      {
+        "command": "livetex.exportPdf",
+        "title": "Export PDF\u2026",
+        "category": "LiveTex",
+        "icon": "$(file-pdf)"
+      },
+      {
+        "command": "livetex.syncToPdf",
+        "title": "Show Cursor Position in PDF",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.installTectonic",
+        "title": "Download Tectonic Engine",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.showLog",
+        "title": "Show Compiler Output",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.setRoot",
+        "title": "Use This File as Root Document",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.overleaf.sync",
+        "title": "Sync with Overleaf",
+        "category": "LiveTex",
+        "icon": "$(cloud)"
+      },
+      {
+        "command": "livetex.overleaf.link",
+        "title": "Link Folder to Overleaf Project\u2026",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.overleaf.clone",
+        "title": "Clone Overleaf Project\u2026",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.overleaf.abortMerge",
+        "title": "Abort Overleaf Merge (Keep Local Version)",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.overleaf.openProject",
+        "title": "Open Project on Overleaf",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.overleaf.setToken",
+        "title": "Set Overleaf Git Token\u2026",
+        "category": "LiveTex"
+      },
+      {
+        "command": "livetex.overleaf.forgetToken",
+        "title": "Forget Overleaf Git Tokens",
+        "category": "LiveTex"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "livetex.openPreview",
+          "when": "resourceLangId == latex",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "livetex.setRoot",
+          "when": "resourceLangId == latex"
+        },
+        {
+          "command": "livetex.syncToPdf",
+          "when": "resourceLangId == latex"
+        },
+        {
+          "command": "livetex.overleaf.abortMerge",
+          "when": "livetex.overleafLinked"
+        },
+        {
+          "command": "livetex.overleaf.openProject",
+          "when": "livetex.overleafLinked"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "livetex.overleaf.link",
+          "when": "explorerResourceIsFolder",
+          "group": "7_modification"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "livetex.openPreview",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "editorLangId == latex"
+      },
+      {
+        "command": "livetex.compile",
+        "key": "ctrl+alt+enter",
+        "mac": "cmd+alt+enter",
+        "when": "editorLangId == latex"
+      }
+    ],
+    "configuration": {
+      "title": "LiveTex",
+      "properties": {
+        "livetex.engine": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "tectonic",
+            "latexmk"
+          ],
+          "default": "auto",
+          "markdownEnumDescriptions": [
+            "Use an installed TeX distribution (TeX Live, TinyTeX, MacTeX, MiKTeX) via `latexmk` if one is found \u2014 same behaviour as Overleaf (pdfLaTeX, biber). Otherwise use Tectonic.",
+            "Always use Tectonic (self-contained XeTeX engine, downloads packages on demand, no install needed).",
+            "Always use `latexmk` from an installed TeX distribution."
+          ],
+          "description": "Which TeX engine compiles documents."
+        },
+        "livetex.tectonicPath": {
+          "type": "string",
+          "default": "",
+          "description": "Absolute path to a tectonic executable. Leave empty to auto-detect."
+        },
+        "livetex.texBinPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Directory with `latexmk`/`pdflatex`/`biber` of your TeX distribution, e.g. `~/.TinyTeX/bin/x86_64-linux`. Leave empty to auto-detect (PATH, TinyTeX, `/usr/local/texlive/*`, MacTeX, MiKTeX)."
+        },
+        "livetex.latexmkArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "-pdf",
+            "-synctex=1",
+            "-interaction=nonstopmode",
+            "-file-line-error"
+          ],
+          "markdownDescription": "Default arguments for latexmk (engine = latexmk). A `latexmkrc` in the project overrides them, and a `% !TEX program = xelatex|lualatex|pdflatex` comment in the root document overrides both. `-outdir`/`-auxdir` are added automatically."
+        },
+        "livetex.compileOn": {
+          "type": "string",
+          "enum": [
+            "change",
+            "save",
+            "manual"
+          ],
+          "default": "change",
+          "markdownEnumDescriptions": [
+            "Recompile while you type (unsaved buffers are compiled from a shadow copy; your files are never touched).",
+            "Recompile when a file is saved.",
+            "Only compile with **LiveTex: Compile Now**."
+          ],
+          "description": "When the open preview is refreshed."
+        },
+        "livetex.debounceMs": {
+          "type": "number",
+          "default": 250,
+          "minimum": 50,
+          "description": "Delay after the last keystroke before recompiling (compileOn = change)."
+        },
+        "livetex.fastPreview": {
+          "type": "boolean",
+          "default": true,
+          "description": "While typing, run a single TeX pass that reuses the previous build's .aux/.bbl instead of the full rerun logic (Tectonic: about 2x faster; latexmk: skips latexmk's dependency analysis and extra passes). Saves, opening the preview and Compile Now always do a full build."
+        },
+        "livetex.previewImageOptimization": {
+          "type": "boolean",
+          "default": true,
+          "description": "For live-preview builds, use cached copies of large transparent PNGs flattened onto white. TeX otherwise re-encodes them on every compile (often most of the build time). Saved, manually compiled and exported PDFs always use the original images."
+        },
+        "livetex.continueOnErrors": {
+          "type": "boolean",
+          "default": true,
+          "description": "Produce a PDF even if TeX reports errors (like Overleaf). Errors still show in the Problems panel."
+        },
+        "livetex.pdfOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "When a saved (clean) build succeeds, write <root>.pdf next to the root .tex file."
+        },
+        "livetex.syncOnCursorMove": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight (and scroll to, if off-screen) the PDF location of the editor cursor."
+        },
+        "livetex.shellEscape": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow \\write18 / shell escape (needed by minted). Only enable for documents you trust."
+        },
+        "livetex.rootFile": {
+          "type": "string",
+          "default": "",
+          "description": "Workspace-relative path of the root document. Leave empty to detect it (% !TEX root magic comment, \\documentclass, or a file that \\input's the current one)."
+        },
+        "livetex.invertPdfInDarkTheme": {
+          "type": "boolean",
+          "default": false,
+          "description": "Render PDF pages with inverted colours when a dark theme is active."
+        },
+        "livetex.overleaf.autoPull": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "For folders linked to Overleaf (Git integration): download Overleaf changes when the editor gains focus, at most every 2 minutes. Only fast-forwards; skipped while you have unsaved edits or local changes that would be touched. Never uploads."
+        },
+        "livetex.overleaf.pushOnSave": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "For folders linked to Overleaf: sync (commit, merge Overleaf's changes, upload) 15 s after the last save. Off by default: use the **Overleaf** status bar item or **LiveTex: Sync with Overleaf**."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit -p . && tsc --noEmit -p webview",
+    "test": "esbuild test/*.test.ts --bundle --platform=node --format=cjs --outdir=dist/test --log-level=warning && node --test dist/test/",
+    "package": "node esbuild.mjs --production && vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "pdfjs-dist": "^6.4.299",
+    "typescript": "^5.9.3"
+  }
+}

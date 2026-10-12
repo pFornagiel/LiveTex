@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=teal]{hyperref}
+
+\title{LaTeX Live Preview\\\large A demo document}
+\author{Extension playground}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document exercises common packages: \texttt{amsmath}, \texttt{graphicx},
+\texttt{booktabs}, \texttt{tikz}, \texttt{hyperref} and a Bib\TeX{} bibliography.
+Edit any file and watch the preview update.
+\end{abstract}
+
+\input{chapters/intro}
+
+\section{Mathematics}
+The Gaussian integral is therefore a very impotant thingy
+\begin{equation}
+  \int_{-\infty}^{\infty} e^{-x^2}\,\mathrm{d}x = \sqrt{\pi}.
+  \label{eq:gauss}
+\end{equation}
+Equation~\eqref{eq:gauss} is classic; see also Knuth~\cite{knuth1984}.
+
+\begin{align}
+  f(x) &= \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n \\
+  \nabla \times \mathbf{B} &= \mu_0 \mathbf{J} + \mu_0\varepsilon_0 \frac{\partial \mathbf{E}}{\partial t}
+\end{align}
+
+\section{Tables and figures}
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lrr}
+    \toprule
+    Engine & Cold start & Warm rebuild \\
+    \midrule
+    Tectonic & 60--100 s & 0.5 s \\
+    latexmk + pdflatex & 2 s & 1 s \\
+    \bottomrule
+  \end{tabular}
+  \caption{Rough compile times for a small document.}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.35\linewidth]{figures/gradient.png}\hfill
+  \begin{tikzpicture}[scale=1.1]
+    \draw[->] (-0.2,0) -- (3.2,0) node[right] {$x$};
+    \draw[->] (0,-0.2) -- (0,2.2) node[above] {$y$};
+    \draw[thick,blue,domain=0:3,smooth] plot (\x,{0.2*\x*\x});
+    \fill[red] (2,0.8) circle (2pt) node[above left] {$P$};
+  \end{tikzpicture}
+  \caption{A raster image (left) and a TikZ drawing (right).}
+\end{figure}
+
+\input{chapters/conclusion}
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\end{document}

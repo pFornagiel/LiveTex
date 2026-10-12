@@ -1,0 +1,12 @@
+node_modules/
+dist/
+media/viewer.js*
+media/pdf.worker.min.mjs
+media/wasm/
+media/standard_fonts/
+media/viewer.css
+*.vsix
+examples/**/*.pdf
+
+# Local Claude Code settings
+.claude/settings.local.json
