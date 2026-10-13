@@ -227,6 +227,7 @@ For agent-driven testing in Cursor (screenshots, clicking through the preview we
 
 - [pdf.js](https://github.com/mozilla/pdf.js) (Apache-2.0) renders the preview and is bundled in `media/`.
 - [Tectonic](https://tectonic-typesetting.github.io) (MIT) is downloaded at runtime and not bundled.
+- [Argent](https://github.com/software-mansion/argent), which helped as a harness to control the IDE during development
 
 
 
